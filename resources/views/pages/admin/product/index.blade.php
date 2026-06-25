@@ -1,7 +1,3 @@
-@php
-use Illuminate\Support\Str;
-@endphp
-
 @extends('layouts.admin.main')
 
 @section('title', 'Data Produk')
@@ -14,12 +10,14 @@ use Illuminate\Support\Str;
 
         <div class="section-header">
 
-            <h1>Produk</h1>
+            <h1>Data Produk</h1>
 
             <div class="section-header-breadcrumb">
 
                 <div class="breadcrumb-item">
-                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}">
+                        Dashboard
+                    </a>
                 </div>
 
                 <div class="breadcrumb-item active">
@@ -32,31 +30,44 @@ use Illuminate\Support\Str;
 
         <div class="section-body">
 
-            <div class="card">
+            @if(session('success'))
 
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="alert alert-success">
+
+                    {{ session('success') }}
+
+                </div>
+
+            @endif
+
+            <div class="card shadow">
+
+                <div class="card-header">
 
                     <h4>Daftar Produk</h4>
 
-                    <a href="{{ route('product.create') }}" class="btn btn-primary">
+                    <div class="card-header-action">
 
-                        <i class="fas fa-plus"></i>
+                        <a href="{{ route('product.create') }}"
+                           class="btn btn-primary">
 
-                        Tambah Produk
+                            <i class="fas fa-plus"></i>
 
-                    </a>
+                            Tambah Produk
+
+                        </a>
+
+                    </div>
 
                 </div>
 
                 <div class="card-body">
 
-                    @include('sweetalert::alert')
-
                     <div class="table-responsive">
 
-                        <table class="table table-bordered table-striped text-center">
+                        <table class="table table-bordered table-hover table-striped">
 
-                            <thead class="thead-dark">
+                            <thead class="thead-light">
 
                                 <tr>
 
@@ -70,7 +81,7 @@ use Illuminate\Support\Str;
 
                                     <th>Stok</th>
 
-                                    <th width="20%">Aksi</th>
+                                    <th width="25%">Aksi</th>
 
                                 </tr>
 
@@ -78,42 +89,44 @@ use Illuminate\Support\Str;
 
                             <tbody>
 
-                                @forelse($products as $item)
+                            @forelse($products as $item)
 
                                 <tr>
 
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="text-center">
 
-                                    <td>
+                                        {{ $loop->iteration }}
+
+                                    </td>
+
+                                    <td class="text-center">
 
                                         @if($item->image)
 
                                             <img
                                                 src="{{ asset('uploads/product/'.$item->image) }}"
-                                                width="70"
+                                                width="90"
                                                 class="img-thumbnail">
 
                                         @else
 
                                             <span class="text-muted">
+
                                                 Tidak ada gambar
+
                                             </span>
 
                                         @endif
 
                                     </td>
 
-                                    <td class="text-left">
+                                    <td>
 
-                                        <strong>{{ $item->name }}</strong>
+                                        <strong>
 
-                                        <br>
+                                            {{ $item->name }}
 
-                                        <small class="text-muted">
-
-                                            {{ Str::limit($item->description,40) }}
-
-                                        </small>
+                                        </strong>
 
                                     </td>
 
@@ -155,6 +168,15 @@ use Illuminate\Support\Str;
 
                                     <td>
 
+                                        <a href="{{ route('product.detail',$item->id) }}"
+                                           class="btn btn-info btn-sm">
+
+                                            <i class="fas fa-eye"></i>
+
+                                            Detail
+
+                                        </a>
+
                                         <a href="{{ route('product.edit',$item->id) }}"
                                            class="btn btn-warning btn-sm">
 
@@ -173,7 +195,6 @@ use Illuminate\Support\Str;
                                             @method('DELETE')
 
                                             <button
-                                                type="submit"
                                                 class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Yakin ingin menghapus produk ini?')">
 
@@ -189,19 +210,24 @@ use Illuminate\Support\Str;
 
                                 </tr>
 
-                                @empty
+                            @empty
 
                                 <tr>
 
-                                    <td colspan="6">
+                                    <td colspan="6"
+                                        class="text-center">
 
-                                        Belum ada data produk.
+                                        <h5>
+
+                                            Belum ada produk
+
+                                        </h5>
 
                                     </td>
 
                                 </tr>
 
-                                @endforelse
+                            @endforelse
 
                             </tbody>
 

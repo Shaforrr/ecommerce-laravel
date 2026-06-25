@@ -3,13 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use App\Models\Transaction;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Transaction extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Table
+    |--------------------------------------------------------------------------
+    */
+
+    protected $table = 'transactions';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Primary Key
+    |--------------------------------------------------------------------------
+    */
+
+    protected $primaryKey = 'id';
 
     /*
     |--------------------------------------------------------------------------
@@ -18,21 +32,10 @@ class User extends Authenticatable
     */
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'point',
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | Hidden Attributes
-    |--------------------------------------------------------------------------
-    */
-
-    protected $hidden = [
-        'password',
-        'remember_token',
+        'user_id',
+        'product_id',
+        'qty',
+        'total',
     ];
 
     /*
@@ -41,44 +44,32 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    protected function casts(): array
+    protected $casts = [
+        'user_id'    => 'integer',
+        'product_id' => 'integer',
+        'qty'        => 'integer',
+        'total'      => 'integer',
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationship : User
+    |--------------------------------------------------------------------------
+    */
+
+    public function user()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Relasi ke Transaction
+    | Relationship : Product
     |--------------------------------------------------------------------------
     */
 
-    public function transactions()
+    public function product()
     {
-        return $this->hasMany(Transaction::class, 'user_id');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Total Transaksi User
-    |--------------------------------------------------------------------------
-    */
-
-    public function totalTransaction()
-    {
-        return $this->transactions()->count();
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Total Pengeluaran User
-    |--------------------------------------------------------------------------
-    */
-
-    public function totalPurchase()
-    {
-        return $this->transactions()->sum('total');
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 }

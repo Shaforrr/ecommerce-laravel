@@ -5,10 +5,9 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title','Merch Store')</title>
+    <title>@yield('title')</title>
 
     @include('layouts.user.style')
 
@@ -17,6 +16,30 @@
 <body>
 
 @include('layouts.user.navbar')
+
+<div class="container mt-3">
+
+@if(session('success'))
+
+<div class="alert alert-success">
+
+    {{ session('success') }}
+
+</div>
+
+@endif
+
+@if(session('error'))
+
+<div class="alert alert-danger">
+
+    {{ session('error') }}
+
+</div>
+
+@endif
+
+</div>
 
 @yield('content')
 

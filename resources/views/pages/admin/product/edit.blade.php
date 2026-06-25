@@ -1,211 +1,88 @@
 @extends('layouts.admin.main')
 
-@section('title', 'Edit Produk')
+@section('title','Edit Produk')
 
 @section('content')
 
 <div class="main-content">
 
-    <section class="section">
+<section class="section">
 
-        <div class="section-header">
+<div class="section-header">
 
-            <h1>Edit Produk</h1>
+<h1>Edit Produk</h1>
 
-            <div class="section-header-breadcrumb">
+</div>
 
-                <div class="breadcrumb-item">
-                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                </div>
+<div class="card">
 
-                <div class="breadcrumb-item">
-                    <a href="{{ route('admin.product') }}">Produk</a>
-                </div>
+<div class="card-body">
 
-                <div class="breadcrumb-item active">
-                    Edit Produk
-                </div>
+<form action="{{ route('product.update',$product->id) }}" method="POST" enctype="multipart/form-data">
 
-            </div>
+@csrf
+@method('PUT')
 
-        </div>
+<div class="form-group">
+<label>Nama Produk</label>
+<input type="text" name="name" class="form-control" value="{{ $product->name }}" required>
+</div>
 
-        <div class="section-body">
+<div class="form-group">
+<label>Kategori</label>
+<input type="text" name="category" class="form-control" value="{{ $product->category }}" required>
+</div>
 
-            <div class="card shadow">
+<div class="form-group">
+<label>Deskripsi</label>
+<textarea name="description" class="form-control" rows="5" required>{{ $product->description }}</textarea>
+</div>
 
-                <div class="card-header">
+<div class="form-group">
+<label>Harga</label>
+<input type="number" name="price" class="form-control" value="{{ $product->price }}" required>
+</div>
 
-                    <h4>Edit Data Produk</h4>
+<div class="form-group">
+<label>Stok</label>
+<input type="number" name="stock" class="form-control" value="{{ $product->stock }}" required>
+</div>
 
-                </div>
+<div class="form-group">
 
-                <div class="card-body">
+<label>Gambar Saat Ini</label>
 
-                    @if ($errors->any())
+<br>
 
-                        <div class="alert alert-danger">
+@if($product->image)
 
-                            <ul class="mb-0">
+<img src="{{ asset('uploads/product/'.$product->image) }}" width="150" class="img-thumbnail">
 
-                                @foreach ($errors->all() as $error)
+@endif
 
-                                    <li>{{ $error }}</li>
+</div>
 
-                                @endforeach
+<div class="form-group">
+<label>Ganti Gambar</label>
+<input type="file" name="image" class="form-control">
+</div>
 
-                            </ul>
+<button class="btn btn-primary">
+<i class="fas fa-save"></i>
+Update Produk
+</button>
 
-                        </div>
+<a href="{{ route('admin.product') }}" class="btn btn-secondary">
+Kembali
+</a>
 
-                    @endif
+</form>
 
-                    <form action="{{ route('product.update',$product->id) }}"
-                          method="POST"
-                          enctype="multipart/form-data">
+</div>
 
-                        @csrf
-                        @method('PUT')
+</div>
 
-                        <div class="form-group">
-
-                            <label>Nama Produk</label>
-
-                            <input
-                                type="text"
-                                name="name"
-                                class="form-control"
-                                value="{{ old('name',$product->name) }}"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label>Deskripsi Produk</label>
-
-                            <textarea
-                                name="description"
-                                rows="5"
-                                class="form-control"
-                                required>{{ old('description',$product->description) }}</textarea>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-md-6">
-
-                                <div class="form-group">
-
-                                    <label>Harga</label>
-
-                                    <input
-                                        type="number"
-                                        name="price"
-                                        class="form-control"
-                                        value="{{ old('price',$product->price) }}"
-                                        required>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <div class="form-group">
-
-                                    <label>Stok</label>
-
-                                    <input
-                                        type="number"
-                                        name="stock"
-                                        class="form-control"
-                                        value="{{ old('stock',$product->stock) }}"
-                                        required>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label>Gambar Saat Ini</label>
-
-                            <br>
-
-                            @if($product->image)
-
-                                <img
-                                    src="{{ asset('uploads/product/'.$product->image) }}"
-                                    width="180"
-                                    class="img-thumbnail">
-
-                            @else
-
-                                <div class="text-muted">
-
-                                    Tidak ada gambar
-
-                                </div>
-
-                            @endif
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label>Upload Gambar Baru</label>
-
-                            <input
-                                type="file"
-                                name="image"
-                                class="form-control">
-
-                            <small class="text-muted">
-
-                                Kosongkan jika tidak ingin mengganti gambar.
-
-                            </small>
-
-                        </div>
-
-                        <hr>
-
-                        <div class="text-right">
-
-                            <a href="{{ route('admin.product') }}"
-                               class="btn btn-secondary">
-
-                                <i class="fas fa-arrow-left"></i>
-
-                                Kembali
-
-                            </a>
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary">
-
-                                <i class="fas fa-save"></i>
-
-                                Update Produk
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
+</section>
 
 </div>
 

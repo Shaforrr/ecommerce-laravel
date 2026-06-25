@@ -1,51 +1,64 @@
-<header class="header_area">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
 
-    <div class="main_menu">
+    <div class="container">
 
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand fw-bold" href="{{ route('user.dashboard') }}">
+            <i class="fas fa-store"></i> Merch Store
+        </a>
 
-            <div class="container">
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
 
-                <a class="navbar-brand" href="/">
-                    <h4>Merch Store</h4>
-                </a>
+            <span class="navbar-toggler-icon"></span>
 
-                <button class="navbar-toggler" type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarSupportedContent">
+        </button>
 
-                    <span class="icon-bar"></span>
+        <div class="collapse navbar-collapse" id="navbarNav">
 
-                </button>
+            <ul class="navbar-nav ms-auto">
 
-                <div class="collapse navbar-collapse">
+                <li class="nav-item">
 
-                    <ul class="nav navbar-nav ml-auto">
+                    <a class="nav-link {{ Route::is('user.dashboard') ? 'active' : '' }}"
+                       href="{{ route('user.dashboard') }}">
 
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/">Home</a>
-                        </li>
+                        <i class="fas fa-home"></i>
+                        Home
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Produk</a>
-                        </li>
+                    </a>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Kontak</a>
-                        </li>
+                </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Logout</a>
-                        </li>
+                <li class="nav-item">
 
-                    </ul>
+                    <a class="nav-link {{ Route::is('user.transaction') ? 'active' : '' }}"
+                       href="{{ route('user.transaction') }}">
 
-                </div>
+                        <i class="fas fa-shopping-cart"></i>
+                        Riwayat
 
-            </div>
+                    </a>
 
-        </nav>
+                </li>
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                       href="{{ route('user.logout') }}">
+
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
 
     </div>
 
-</header>
+</nav>

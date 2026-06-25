@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class ProductController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | Tampilkan Semua Produk
+    | Menampilkan Semua Produk
     |--------------------------------------------------------------------------
     */
 
@@ -42,18 +41,19 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'        => 'required|max:255',
+            'name'        => 'required|max:100',
+            'category'    => 'required|max:100',
             'description' => 'required',
-            'price'       => 'required|numeric',
-            'stock'       => 'required|numeric',
-            'image'       => 'required|image|mimes:jpg,jpeg,png|max:2048'
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|numeric|min:0',
+            'image'       => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $imageName = null;
 
         if ($request->hasFile('image')) {
 
-            $imageName = time().'.'.$request->image->extension();
+            $imageName = time() . '.' . $request->image->extension();
 
             $request->image->move(
                 public_path('uploads/product'),
@@ -62,22 +62,30 @@ class ProductController extends Controller
         }
 
         Product::create([
-
-            'name' => $request->name,
-
+            'name'        => $request->name,
+            'category'    => $request->category,
             'description' => $request->description,
-
-            'price' => $request->price,
-
-            'stock' => $request->stock,
-
-            'image' => $imageName
-
+            'price'       => $request->price,
+            'stock'       => $request->stock,
+            'image'       => $imageName,
         ]);
 
-        Alert::success('Berhasil','Produk berhasil ditambahkan');
+        return redirect()
+            ->route('admin.product')
+            ->with('success', 'Produk berhasil ditambahkan.');
+    }
 
-        return redirect()->route('admin.product');
+    /*
+    |--------------------------------------------------------------------------
+    | Detail Produk
+    |--------------------------------------------------------------------------
+    */
+
+    public function detail($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return view('pages.admin.product.detail', compact('product'));
     }
 
     /*
@@ -90,10 +98,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        return view(
-            'pages.admin.product.edit',
-            compact('product')
-        );
+        return view('pages.admin.product.edit', compact('product'));
     }
 
     /*
@@ -102,63 +107,50 @@ class ProductController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
-
         $request->validate([
-
-            'name'=>'required|max:255',
-
-            'description'=>'required',
-
-            'price'=>'required|numeric',
-
-            'stock'=>'required|numeric',
-
-            'image'=>'nullable|image|mimes:jpg,jpeg,png|max:2048'
-
+            'name'        => 'required|max:100',
+            'category'    => 'required|max:100',
+            'description' => 'required',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|numeric|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if($request->hasFile('image')){
+        $product = Product::findOrFail($id);
 
-            if(
+        $imageName = $product->image;
+
+        if ($request->hasFile('image')) {
+
+            if (
                 $product->image &&
-                file_exists(public_path('uploads/product/'.$product->image))
-            ){
-
-                unlink(
-                    public_path('uploads/product/'.$product->image)
-                );
-
+                file_exists(public_path('uploads/product/' . $product->image))
+            ) {
+                unlink(public_path('uploads/product/' . $product->image));
             }
 
-            $imageName=time().'.'.$request->image->extension();
+            $imageName = time() . '.' . $request->image->extension();
 
             $request->image->move(
                 public_path('uploads/product'),
                 $imageName
             );
-
-            $product->image=$imageName;
         }
 
-        $product->name=$request->name;
+        $product->update([
+            'name'        => $request->name,
+            'category'    => $request->category,
+            'description' => $request->description,
+            'price'       => $request->price,
+            'stock'       => $request->stock,
+            'image'       => $imageName,
+        ]);
 
-        $product->description=$request->description;
-
-        $product->price=$request->price;
-
-        $product->stock=$request->stock;
-
-        $product->save();
-
-        Alert::success(
-            'Berhasil',
-            'Produk berhasil diupdate'
-        );
-
-        return redirect()->route('admin.product');
+        return redirect()
+            ->route('admin.product')
+            ->with('success', 'Produk berhasil diperbarui.');
     }
 
     /*
@@ -171,26 +163,17 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        if(
+        if (
             $product->image &&
-            file_exists(
-                public_path('uploads/product/'.$product->image)
-            )
-        ){
-
-            unlink(
-                public_path('uploads/product/'.$product->image)
-            );
-
+            file_exists(public_path('uploads/product/' . $product->image))
+        ) {
+            unlink(public_path('uploads/product/' . $product->image));
         }
 
         $product->delete();
 
-        Alert::success(
-            'Berhasil',
-            'Produk berhasil dihapus'
-        );
-
-        return redirect()->route('admin.product');
+        return redirect()
+            ->route('admin.product')
+            ->with('success', 'Produk berhasil dihapus.');
     }
 }
